@@ -1,0 +1,27 @@
+package com.dualaccess.db;
+
+import java.sql.*;
+
+public class DBConnection {
+    public static Connection getConnection() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/dual_access_db",
+                "root", ""  // For XAMPP; no password by default
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static void main(String[] args) {
+        Connection conn = getConnection();
+        if (conn != null) {
+            System.out.println("Connection Successful");
+        } else {
+            System.out.println("Connection Failed");
+        }
+    }
+
+}

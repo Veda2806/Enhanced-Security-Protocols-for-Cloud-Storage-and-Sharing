@@ -1,0 +1,12 @@
+127.0.0.1 - - [11/May/2025:22:27:01 +0530] "GET / HTTP/1.1" 404 705
+0:0:0:0:0:0:0:1 - - [11/May/2025:22:27:02 +0530] "GET /DualAccessControlSystem/ HTTP/1.1" 200 2677
+0:0:0:0:0:0:0:1 - - [11/May/2025:22:27:03 +0530] "GET /DualAccessControlSystem/images/background.jpg HTTP/1.1" 200 557766
+0:0:0:0:0:0:0:1 - - [11/May/2025:22:27:03 +0530] "GET /favicon.ico HTTP/1.1" 404 716
+0:0:0:0:0:0:0:1 - - [11/May/2025:22:27:11 +0530] "POST /DualAccessControlSystem/LoginServlet HTTP/1.1" 200 29
+0:0:0:0:0:0:0:1 - - [11/May/2025:22:28:27 +0530] "POST /DualAccessControlSystem/LoginServlet HTTP/1.1" 200 29
+0:0:0:0:0:0:0:1 - - [11/May/2025:22:28:31 +0530] "POST /DualAccessControlSystem/LoginServlet HTTP/1.1" 200 29
+127.0.0.1 - - [11/May/2025:22:59:01 +0530] "GET / HTTP/1.1" 404 705
+0:0:0:0:0:0:0:1 - - [11/May/2025:22:59:03 +0530] "GET /DualAccessControlSystem/download_log.jsp HTTP/1.1" 500 2341
+0:0:0:0:0:0:0:1 - - [11/May/2025:23:00:04 +0530] "GET /DualAccessControlSystem/download_log.jsp HTTP/1.1" 500 2341
+0:0:0:0:0:0:0:1 - - [11/May/2025:23:00:45 +0530] "GET /DualAccessControlSystem/ HTTP/1.1" 200 2677
+0:0:0:0:0:0:0:1 - - [11/May/2025:23:01:03 +0530] "POST /DualAccessControlSystem/LoginServlet HTTP/1.1" 200 29

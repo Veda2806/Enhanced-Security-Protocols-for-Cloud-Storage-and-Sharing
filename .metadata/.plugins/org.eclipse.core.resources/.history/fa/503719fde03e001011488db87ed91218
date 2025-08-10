@@ -1,0 +1,112 @@
+package com.dualaccess.servlets;
+
+import com.dualaccess.db.DBConnection;
+import com.dualaccess.util.FileEncryptionUtil;
+
+import javax.crypto.SecretKey;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.*;
+import java.io.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+@MultipartConfig
+public class UploadServlet extends HttpServlet {
+    private static final String UPLOAD_DIR = "uploaded_files";
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("username") == null) {
+            response.sendRedirect("index.jsp");
+            return;
+        }
+
+        String username = (String) session.getAttribute("username");
+        String department = (String) session.getAttribute("department");
+
+        try {
+            Part filePart = request.getPart("file");
+            String fileName = getFileName(filePart);
+            String fileExt = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+            String mimeType = filePart.getContentType(); // More accurate than ServletContext
+
+            // 🔒 Validate both MIME type and extension
+            if (!isAllowed(fileExt, mimeType)) {
+                System.out.println("⛔ Blocked upload: " + fileName + " by " + username +
+                                   " | Extension: " + fileExt + " | MIME: " + mimeType);
+                request.setAttribute("message", "Upload failed: Unsupported file type.");
+                request.getRequestDispatcher("upload.jsp").forward(request, response);
+                return;
+            }
+
+            String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) uploadDir.mkdir();
+
+            String newFileName = System.currentTimeMillis() + "_" + fileName;
+            String filePath = uploadPath + File.separator + newFileName;
+
+            // 🔐 Encrypt file with master key
+            InputStream inputStream = filePart.getInputStream();
+            byte[] originalBytes = inputStream.readAllBytes();
+            SecretKey masterKey = FileEncryptionUtil.getMasterKeyFromEnv();
+            byte[] encryptedBytes = FileEncryptionUtil.encrypt(originalBytes, masterKey);
+
+            try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                fos.write(encryptedBytes);
+            }
+
+            try (Connection conn = DBConnection.getConnection()) {
+                // 📄 Save file metadata
+                PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO files (filename, owner, department, filepath) VALUES (?, ?, ?, ?)"
+                );
+                ps.setString(1, newFileName);
+                ps.setString(2, username);
+                ps.setString(3, department);
+                ps.setString(4, filePath);
+                ps.executeUpdate();
+
+                // 🧾 Log upload
+                PreparedStatement log = conn.prepareStatement(
+                    "INSERT INTO upload_log (username, filename) VALUES (?, ?)"
+                );
+                log.setString(1, username);
+                log.setString(2, newFileName);
+                log.executeUpdate();
+
+                request.setAttribute("message", "✅ File encrypted and uploaded successfully.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("message", "Upload failed: " + e.getMessage());
+        }
+
+        request.getRequestDispatcher("upload.jsp").forward(request, response);
+    }
+
+    // ✅ MIME type + extension-based whitelist
+    private boolean isAllowed(String ext, String mime) {
+        return (
+            (ext.matches("jpg|jpeg|png|pdf")) &&
+            (mime != null && (
+                mime.equals("image/jpeg") ||
+                mime.equals("image/png") ||
+                mime.equals("application/pdf")
+            ))
+        );
+    }
+
+    private String getFileName(Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 2, content.length() - 1);
+            }
+        }
+        return null;
+    }
+}

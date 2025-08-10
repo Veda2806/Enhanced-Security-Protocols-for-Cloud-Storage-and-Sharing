@@ -1,0 +1,125 @@
+
+package com.dualaccess.servlets;
+
+import com.dualaccess.db.DBConnection;
+import com.dualaccess.util.FileEncryptionUtil;
+
+import javax.crypto.SecretKey;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+@MultipartConfig
+public class UploadServlet extends HttpServlet {
+    private static final String UPLOAD_DIR = "uploaded_files";
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("username") == null) {
+            response.sendRedirect("index.jsp");
+            return;
+        }
+
+        String username = (String) session.getAttribute("username");
+        String department = (String) session.getAttribute("department");
+
+        try {
+            Part filePart = request.getPart("file");
+            String fileName = getFileName(filePart);
+            String fileExt = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+
+            // Save to a temporary file to accurately detect MIME type from content
+            File tempFile = File.createTempFile("upload_", "_" + fileName);
+            try (InputStream input = filePart.getInputStream()) {
+                Files.copy(input, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            String mimeType = Files.probeContentType(tempFile.toPath());
+            if (mimeType == null) {
+                mimeType = filePart.getContentType(); // fallback
+            }
+
+            System.out.println("Upload attempt: " + fileName + " by " + username +
+                    " | Extension: " + fileExt + " | MIME: " + mimeType);
+
+            // Validate MIME type and extension
+            if (!isAllowed(fileExt, mimeType)) {
+                System.out.println("⛔ Blocked upload: " + fileName + " by " + username +
+                        " | Extension: " + fileExt + " | MIME: " + mimeType);
+                request.setAttribute("message", "Upload failed: Unsupported file type.");
+                tempFile.delete(); // cleanup
+                request.getRequestDispatcher("upload.jsp").forward(request, response);
+                return;
+            }
+
+            String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) uploadDir.mkdir();
+
+            String newFileName = System.currentTimeMillis() + "_" + fileName;
+            String filePath = uploadPath + File.separator + newFileName;
+
+            // Encrypt file using master key
+            byte[] originalBytes = Files.readAllBytes(tempFile.toPath());
+            SecretKey masterKey = FileEncryptionUtil.getMasterKeyFromEnv();
+            byte[] encryptedBytes = FileEncryptionUtil.encrypt(originalBytes, masterKey);
+            Files.write(Path.of(filePath), encryptedBytes);
+
+            tempFile.delete(); // cleanup temp file
+
+            try (Connection conn = DBConnection.getConnection()) {
+                PreparedStatement ps = conn.prepareStatement(
+                        "INSERT INTO files (filename, owner, department, filepath) VALUES (?, ?, ?, ?)"
+                );
+                ps.setString(1, newFileName);
+                ps.setString(2, username);
+                ps.setString(3, department);
+                ps.setString(4, filePath);
+                ps.executeUpdate();
+
+                PreparedStatement log = conn.prepareStatement(
+                        "INSERT INTO upload_log (username, filename) VALUES (?, ?)"
+                );
+                log.setString(1, username);
+                log.setString(2, newFileName);
+                log.executeUpdate();
+
+                request.setAttribute("message", "✅ File encrypted and uploaded successfully.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("message", "Upload failed: " + e.getMessage());
+        }
+
+        request.getRequestDispatcher("upload.jsp").forward(request, response);
+    }
+
+    private boolean isAllowed(String ext, String mime) {
+        return (
+                (ext.matches("jpg|jpeg|png|pdf")) &&
+                        (mime != null && (
+                                mime.equals("image/jpeg") ||
+                                mime.equals("image/png") ||
+                                mime.equals("application/pdf")
+                        ))
+        );
+    }
+
+    private String getFileName(Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 2, content.length() - 1);
+            }
+        }
+        return null;
+    }
+}

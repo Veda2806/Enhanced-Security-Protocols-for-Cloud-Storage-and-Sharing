@@ -1,0 +1,9 @@
+127.0.0.1 - - [01/Jun/2025:16:54:10 +0530] "GET / HTTP/1.1" 404 705
+0:0:0:0:0:0:0:1 - - [01/Jun/2025:16:54:12 +0530] "GET /DualAccessControlSystem/ HTTP/1.1" 200 8616
+0:0:0:0:0:0:0:1 - - [01/Jun/2025:16:54:13 +0530] "GET /DualAccessControlSystem/images/background.jpg HTTP/1.1" 200 557766
+0:0:0:0:0:0:0:1 - - [01/Jun/2025:16:54:15 +0530] "GET /favicon.ico HTTP/1.1" 404 716
+0:0:0:0:0:0:0:1 - - [01/Jun/2025:17:11:46 +0530] "POST /DualAccessControlSystem/LoginServlet HTTP/1.1" 302 -
+0:0:0:0:0:0:0:1 - - [01/Jun/2025:17:11:46 +0530] "GET /DualAccessControlSystem/welcome.jsp HTTP/1.1" 200 14253
+0:0:0:0:0:0:0:1 - - [01/Jun/2025:17:11:47 +0530] "GET /DualAccessControlSystem/images/profile.png HTTP/1.1" 200 2831
+0:0:0:0:0:0:0:1 - - [01/Jun/2025:17:11:52 +0530] "GET /DualAccessControlSystem/upload.jsp HTTP/1.1" 200 8773
+0:0:0:0:0:0:0:1 - - [01/Jun/2025:17:12:15 +0530] "POST /DualAccessControlSystem/UploadServlet HTTP/1.1" 200 9052
