@@ -63,12 +63,12 @@ Implements **AES encryption**, **Role-Based Access Control (RBAC)**, **Attribute
 ```bash
 git clone https://github.com/Veda2806/Enhanced-Security-Protocols-for-Cloud-Storage-and-Sharing.git
 cd Enhanced-Security-Protocols-for-Cloud-Storage-and-Sharing
-### 2️⃣ Database Setup
+2️⃣ Database Setup
 1.Install MySQL (or use AWS RDS).
 2.Create database
 3.Import schema
 4.Update DBConnection.java with your MySQL credentials.
-### 3️⃣ Deploy WAR File
+3️⃣ Deploy WAR File
 Copy release/project.war to Tomcat’s /webapps/ directory.
 1.Start Tomcat
 2.Access the app
