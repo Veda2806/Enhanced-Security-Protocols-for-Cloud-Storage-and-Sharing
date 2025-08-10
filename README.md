@@ -6,20 +6,24 @@ Implements **AES encryption**, **Role-Based Access Control (RBAC)**, **Attribute
 ---
 ## 📸 Screenshots
 
-### Login Page
-![Login Page](https://drive.google.com/file/d/1lQSLF55H-iF8USOZCt5CHCp1DldJcq2g/view?usp=drive_link)
+### Download File Page
+![Download Page](doc/download_file_page.png)
 
 ### Registration Page
-![Registration](https://drive.google.com/file/d/12qPZAMo5TpntsqUoaFDTnOFoIE-i7MCK/view?usp=drive_link)
+![Registration](doc/registration_page.png)
 
-### Dashboard
-![Dashboard](https://drive.google.com/file/d/1Jyu5RmvSTdHZt0pfBoWvr4UYsGZmy_yW/view?usp=drive_link)
+### Screenshot 98
+![Screenshot 98](doc/Screenshot%20(98).png)
 
-### File Upload Page
-![Upload Page](https://drive.google.com/file/d/1EKWDWDUG2-xsT184Bp4MFq2XhfuL1hLT/view?usp=drive_link)
+### Screenshot 112
+![Screenshot 112](doc/Screenshot%20(112).png)
 
-### File Download Page
-![Download Page](https://drive.google.com/file/d/1E8MJZiRbBrUiXDEd-w6qBVcE_Dbbv5hU/view?usp=drive_link)
+### Screenshot 113
+![Screenshot 113](doc/Screenshot%20(113).png)
+
+### Upload File Page
+![Upload Page](doc/upload_file.png)
+
 
 ## 🚀 Features
 - **AES-256 Encryption** – All files are encrypted before storing in the cloud.
