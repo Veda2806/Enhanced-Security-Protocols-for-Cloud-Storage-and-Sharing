@@ -22,7 +22,7 @@ Implements **AES encryption**, **Role-Based Access Control (RBAC)**, **Attribute
 ![Screenshot 113](doc/Screenshot%20(113).png)
 
 ### Upload File Page
-![Upload Page](doc/upload_file.png)
+![Upload Page](https://drive.google.com/file/d/1EKWDWDUG2-xsT184Bp4MFq2XhfuL1hLT/view?usp=drive_link)
 
 
 ## 🚀 Features
