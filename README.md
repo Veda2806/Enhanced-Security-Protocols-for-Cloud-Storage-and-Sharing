@@ -4,25 +4,6 @@ A **Java EE Web Application** for secure cloud-based file storage and sharing.
 Implements **AES encryption**, **Role-Based Access Control (RBAC)**, **Attribute-Based Access Control (ABAC) simulation**, and **EDoS protection** to ensure files are accessed only by authorized users with valid roles/attributes.
 
 ---
-## 📸 Screenshots
-
-### Download File Page
-![Download Page](doc/download_file_page.png)
-
-### Registration Page
-![Registration](doc/registration_page.png)
-
-### Screenshot 98
-![Screenshot 98](doc/Screenshot%20(98).png)
-
-### Screenshot 112
-![Screenshot 112](doc/Screenshot%20(112).png)
-
-### Screenshot 113
-![Screenshot 113](doc/Screenshot%20(113).png)
-
-### Upload File Page
-![Upload Page](https://drive.google.com/file/d/1EKWDWDUG2-xsT184Bp4MFq2XhfuL1hLT/view?usp=drive_link)
 
 
 ## 🚀 Features
